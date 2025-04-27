@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 
 class AuthService {
   bool isLoggedIn = false; // Variable para almacenar el estado de autenticación
+  static String? currentUserId; 
 
   static String get _baseUrl {
     if (kIsWeb) {
@@ -33,7 +34,9 @@ class AuthService {
       print("Resposta rebuda amb codi: ${response.statusCode}");
 
       if (response.statusCode == 200) {
-        return json.decode(response.body);
+        final responseJson = jsonDecode(response.body);
+        currentUserId = responseJson['id'];
+        return responseJson;
       } else {
         return {'error': 'email o contrasenya incorrectes'};
       }
@@ -45,6 +48,7 @@ class AuthService {
 
   void logout() {
     isLoggedIn = false; // Cambia el estado de autenticación a no autenticado
+    currentUserId = null;
     print("Sessió tancada");
   }
 }
